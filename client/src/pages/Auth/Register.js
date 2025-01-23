@@ -19,8 +19,12 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission/refresh on submission
     try {
+      /*
+      If below path don't work then define proxy in package.json and give url of backend(same which is given in .env)
+       - And use as: axios.post('/api/auth/register', {all data}) 
+      */
       const res = await axios.post(
         `${process.env.REACT_APP_API}/api/v1/auth/register`,
         { 
@@ -33,15 +37,15 @@ const Register = () => {
         }
       );
 
-      if (res && res.data.success) {
+      if(res && res.data.success){ //These are sent in backend (authController.js)
         toast.success(res.data && res.data.message);
         navigate("/login");
       } 
-      else {
+      else{
         toast.error(res.data.message);
       }
     } 
-    catch (error) {
+    catch(error){
       console.log(error);
       toast.error("Something went wrong!");
     }
@@ -52,6 +56,7 @@ const Register = () => {
       <div className="form-container">
         <h1>Register</h1>
         <form onSubmit={handleSubmit}>
+          {/* Name */}
           <div className="mb-3">
             <input
               type="text"
@@ -63,6 +68,7 @@ const Register = () => {
               required
             />
           </div>
+          {/* Email */}
           <div className="mb-3">
             <input
               value={email}
@@ -74,6 +80,7 @@ const Register = () => {
               required
             />
           </div>
+          {/* Password */}
           <div className="mb-3">
             <input
               type="password"
@@ -85,6 +92,7 @@ const Register = () => {
               required
             />
           </div>
+          {/* Phone */}
           <div className="mb-3">
             <input
               value={phone}
@@ -96,6 +104,7 @@ const Register = () => {
               required
             />
           </div>
+          {/* Address */}
           <div className="mb-3">
             <input
               value={address}
@@ -121,6 +130,7 @@ const Register = () => {
               required
             />
           </div>
+          {/* Submit Button */}
           <div className="d-flex justify-content-center">
             <button type="submit" className="btn btn-primary submit-btn">
               Submit
