@@ -16,13 +16,14 @@
   line-height: 26px;
   text-transform: uppercase;
   box-shadow: 0 8px 6px -6px gray;
-  --webkit-box-shadow: 0 8px 6px -6px gray;
+  --webkit-box-shadow: 0 8px 6px -6px gray; /*It is used when above is not supported by the existing browser*/
 }
 
 .nav-link {
   font-weight: 300 !important;
 }
 
+/* This active class is used to change the color of the active link and is applied dynamically by 'NavLink' component */
 .active {
   border-bottom: 2px solid black;
 }
@@ -53,8 +54,8 @@
 }
 
 .footer a:hover {
-  color: #ffefba;
-  border-bottom: 1px solid #ffefba;
+  color: #6a8d66;
+  border-bottom: 1px solid #5a4e28;
 }
 
 /* PAGE NOT FOUND */

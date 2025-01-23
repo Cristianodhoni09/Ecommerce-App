@@ -37,7 +37,8 @@ const Login = () => {
       else {
         toast.error(res.data.message);
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.log(error);
       toast.error(error.response.data.message || "Something went wrong!");
     }
@@ -48,6 +49,7 @@ const Login = () => {
       <div className="form-container">
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
+          {/* email */}
           <div className="mb-3">
             <input
               value={email}
@@ -59,6 +61,7 @@ const Login = () => {
               required
             />
           </div>
+          {/* password */}
           <div className="mb-3">
             <input
               type="password"
@@ -70,6 +73,7 @@ const Login = () => {
               required
             />
           </div>
+          {/* Forgot-password */}
           <div className="mb-3 d-flex justify-content-center">
             <button
               type="button"
@@ -79,7 +83,7 @@ const Login = () => {
               Forgot Password
             </button>
           </div>
-
+          { /* submit */}
           <div className="d-flex justify-content-center">
             <button type="submit" className="btn btn-primary submit-btn">
               Submit
