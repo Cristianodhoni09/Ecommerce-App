@@ -6,10 +6,10 @@ import Spinner from "../Spinner";
 
 export const PrivateRoute = () => {
   const [ok, setOk] = useState(false);
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
 
-  //   default axios
-  axios.defaults.headers.common["Authorization"] = auth?.token;
+  //Default axios
+  axios.defaults.headers.common["Authorization"] = auth?.token; // set token in header globally for all HTTP requests
 
   useEffect(() => {
     const authCheck = async () => {
@@ -31,5 +31,6 @@ export const PrivateRoute = () => {
     if (auth?.token) authCheck();
   }, [auth?.token]);
 
+  //Outlet is a special component in react-router-dom that renders different child components of parent route
   return ok ? <Outlet /> : <Spinner path="/login"/>;
 };
