@@ -12,12 +12,12 @@ export const createCategoryController = async (req, res) => {
     if (existingCategory) {
       return res.status(200).send({
         success: true,
-        message: "Category Already Exists!",
+        message: "Category Already Exists, create another!",
       });
     }
     const category = await new categoryModel({
       name,
-      slug: slugify(name),
+      slug: slugify(name), // slugify the name to remove white spaces and make it lowercase
     }).save();
 
     res.status(201).send({
@@ -31,7 +31,7 @@ export const createCategoryController = async (req, res) => {
     res.status(500).send({
       success: false,
       errro,
-      message: "Errro in Category",
+      message: "Error in Category!",
     });
   }
 };
@@ -44,7 +44,7 @@ export const updateCategoryController = async (req, res) => {
     const category = await categoryModel.findByIdAndUpdate(
       id,
       { name, slug: slugify(name) },
-      { new: true }
+      { new: true } // This new property should be true to return the updated document
     );
     res.status(200).send({
       success: true,
