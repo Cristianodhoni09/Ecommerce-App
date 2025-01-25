@@ -36,16 +36,19 @@ const Header = () => {
               <FcShop /> ShopKart
             </Link>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              {/* Home */}
               <li className="nav-item">
                 <NavLink to="/" className="nav-link">
                   Home
                 </NavLink>
               </li>
+              {/* Category */}
               <li className="nav-item">
                 <NavLink to="/category" className="nav-link">
                   Category
                 </NavLink>
               </li>
+              {/* Not logged in ? */}
               {!auth.user ? (
                 <>
                   <li className="nav-item">
@@ -60,8 +63,10 @@ const Header = () => {
                   </li>{" "}
                 </>
               ) : (
+                // Logged in
                 <>
                   <li className="nav-item dropdown">
+                    {/* User name on navbar */}
                     <NavLink
                       className="dropdown-toggle nav-link"
                       data-bs-toggle="dropdown"
@@ -70,6 +75,7 @@ const Header = () => {
                       {auth?.user?.name}
                     </NavLink>
                     <ul className="dropdown-menu">
+                      {/* Dashboard */}
                       <li>
                         <NavLink
                           to={`/dashboard/${auth?.user?.role === 1 ? "admin" : "user"}`}
@@ -78,6 +84,7 @@ const Header = () => {
                           Dashboard
                         </NavLink>
                       </li>
+                      {/* Logout */}
                       <li>
                         <NavLink
                           onClick={handleLogout}
