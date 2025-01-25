@@ -22,10 +22,12 @@ const ForgotPassword = () => {
       if (res && res.data.success) {
         toast.success(res.data && res.data.message);
         navigate(location.state || "/login");
-      } else {
+      } 
+      else {
         toast.error(res.data.message);
       }
-    } catch (error) {
+    } 
+    catch (error) {
       console.log(error);
       toast.error(error.response.data.message || "Something went wrong!");
     }
@@ -36,6 +38,7 @@ const ForgotPassword = () => {
       <div className="form-container">
         <h1>Forgot Password</h1>
         <form onSubmit={handleSubmit}>
+          {/* Email */}
           <div className="mb-3">
             <input
               value={email}
@@ -47,6 +50,7 @@ const ForgotPassword = () => {
               required
             />
           </div>
+          {/* Security Question */}
           <div className="mb-3">
             <input
               type="question"
@@ -58,6 +62,7 @@ const ForgotPassword = () => {
               required
             />
           </div>
+          {/* New Password */}
           <div className="mb-3">
             <input
               type="password"
