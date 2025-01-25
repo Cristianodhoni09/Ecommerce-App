@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => { //Children represents the components that will be wrapped inside the AuthProvider
   const [auth, setAuth] = useState({ user: null, token: "" });
+
   useEffect(() => {
     const data = localStorage.getItem("auth");
     if (data) {
@@ -32,6 +33,8 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={[auth, setAuth]}>
+      {/* Writing children here is equivalent to wrapping the components inside the AuthProvider so
+          they can access the value of the AuthContext */}
       {children}
     </AuthContext.Provider>
   );
