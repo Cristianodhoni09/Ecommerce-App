@@ -53,7 +53,7 @@ export const getProductController = async (req, res) => {
   try {
     const products = await productModel
       .find({})
-      .populate("category")
+      .populate("category") // It will populate the category field with the actual category data
       .select("-photo") //Initially we don't want photo
       .limit(12)
       .sort({ createdAt: -1 });
@@ -103,7 +103,7 @@ export const productPhotoController = async (req, res) => {
   try {
     const product = await productModel.findById(req.params.pid).select("photo");
     if (product.photo.data) {
-      res.set("Content-type", product.photo.contentType); // 
+      res.set("Content-type", product.photo.contentType); // It sets the header of the response with the content type
       return res.status(200).send(product.photo.data);
     }
   } 
@@ -125,7 +125,8 @@ export const deleteProductController = async (req, res) => {
       success: true,
       message: "Product Deleted successfully",
     });
-  } catch (error) {
+  } 
+  catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
@@ -140,7 +141,7 @@ export const updateProductController = async (req, res) => {
   try {
     const { name, description, price, category, quantity, shipping } = req.fields;
     const { photo } = req.files;
-    //alidation
+    //Validations
     switch (true) {
       case !name:
         return res.status(500).send({ error: "Name is Required" });
