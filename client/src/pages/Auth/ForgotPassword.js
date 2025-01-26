@@ -53,13 +53,13 @@ const ForgotPassword = () => {
           {/* Security Question */}
           <div className="mb-3">
             <input
-              type="question"
-              value={question}
-              onChange={(event) => setQuestion(event.target.value)}
-              className="form-control"
-              id="exampleInputPassword"
-              placeholder="What is your birth year?"
-              required
+                  type="text"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  className="form-control"
+                  id="exampleInputEmail1"
+                  placeholder="Enter your security text..."
+                  required
             />
           </div>
           {/* New Password */}
