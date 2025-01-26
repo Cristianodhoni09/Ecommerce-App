@@ -5,17 +5,13 @@ import { useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout/Layout";
 import "../../styles/AuthStyles.css";
 
-// Import react-datepicker
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [question, setQuestion] = useState(new Date()); // Updated to store a Date object
+  const [question, setQuestion] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -33,7 +29,7 @@ const Register = () => {
           password, 
           phone, 
           address, 
-          question: question.toISOString() // Convert date to ISO string for backend
+          question
         }
       );
 
@@ -116,18 +112,16 @@ const Register = () => {
               required
             />
           </div>
-          {/* Replacing text input with DatePicker for 'question' */}
+          {/* Security question */}
           <div className="mb-3">
-            <label htmlFor="exampleInputQuestion">Security Question:</label>
-            <DatePicker
-              showIcon
-              isClearable
-              placeholderText="Enter new..."
-              selected={question} // Bind selected date to state
-              onChange={(date) => setQuestion(date)} // Update state on change
-              dateFormat="dd/MM/yyyy" // Format displayed in the date picker
-              className="form-control" // Add consistent styling
-              required
+            <input
+                type="text"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                className="form-control"
+                id="exampleInputEmail1"
+                placeholder="Enter any text that you will remember..."
+                required
             />
           </div>
           {/* Submit Button */}
