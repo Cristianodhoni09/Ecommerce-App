@@ -43,7 +43,7 @@ export const registerController = async (req, res) => {
       phone,
       address,
       password: hashedPassword,
-      question: new Date(question)
+      question
     }).save();
 
     res.status(201).send({
@@ -70,7 +70,7 @@ export const loginController = async (req, res) => {
     if (!email || !password) {
       return res.status(400).send({
         success: false,
-        message: "Invalid email or password!",
+        message: "Field should not be empty, Enter correct email and password!",
       });
     }
     //check user
@@ -91,9 +91,6 @@ export const loginController = async (req, res) => {
     //token
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d"});
 
-    //formatted question/DOB
-    const formattedDate = new Date(user.question).toLocaleDateString("en-US"); // Format: MM/DD/YYYY
-
     res.status(200).send({
       success: true,
       message: "Logged in successfully!",
@@ -103,7 +100,7 @@ export const loginController = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
-        question: formattedDate,
+        question: user.question,
         role: user.role
       },
       token,
@@ -133,13 +130,17 @@ export const testController = (req, res) => {
 export const forgotPasswordController = async (req, res) => {
   try {
     const { email, question, password } = req.body;
-    if (!email) res.status(400).send({ message: "Email is required!" });
-    if (!question)
-      res.status(400).send({
+    if (!email){
+      return res.status(400).send({ message: "Email is required!" });
+    }
+    if (!question){
+      return res.status(400).send({
         message: "Security Question should be answered and can't be left empty",
       });
-    if (!password)
-      res.status(400).send({ message: `New Password can't be blank!` });
+    }
+    if (!password){
+      return res.status(400).send({ message: `New Password can't be blank!` });
+    }
 
     // check
     const user = await userModel.findOne({ email, question });
