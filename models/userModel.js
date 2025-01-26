@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
       required: true,
     },
     question: {
-      type: Date,
+      type: String,
       required: true
     },
     role: {
