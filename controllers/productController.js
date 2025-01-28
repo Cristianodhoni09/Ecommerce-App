@@ -184,3 +184,83 @@ export const updateProductController = async (req, res) => {
     });
   }
 };
+
+
+//filters
+export const productFiltersController = async (req, res) => {
+  try {
+    const { checkedArr, radio } = req.body;
+    let args = {};
+    if (checkedArr.length > 0) args.category = checkedArr;
+    if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
+
+    const products = await productModel.find(args);
+
+    if (products.length === 0) {
+      return res.status(200).send({
+        success: true,
+        message: "No product matches the filters.",
+        products: [],
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      products,
+    });
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error while filtering products!!",
+      error,
+    });
+  }
+};
+
+// product count
+export const productCountController = async (req, res) => {
+  try {
+    const total = await productModel.find({}).estimatedDocumentCount();
+    res.status(200).send({
+      success: true,
+      total,
+    });
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(400).send({
+      message: "Error in product counting!!",
+      error,
+      success: false,
+    });
+  }
+};
+
+// product list based on page
+export const productListController = async (req, res) => {
+  try {
+    const perPage = 3; //Sets the number of products displayed per page
+    const page = req.params.page ? req.params.page : 1; //Reads the page number from the URL
+    const products = await productModel
+      .find({})
+      .select("-photo")
+      .skip((page - 1) * perPage) //EX: Page = 2 -> skip(3) (skips the first 3 products and fetches the next 3)
+      .limit(perPage)
+      .sort({ createdAt: -1 }); //Show the most recent products first
+
+    res.status(200).send({
+      success: true,
+      products,
+    });
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error in getting products based on per page!!",
+      error,
+    });
+  }
+};
