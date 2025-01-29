@@ -6,13 +6,16 @@ import { AuthProvider } from "./context/auth";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import "antd/dist/reset.css"; //From Ant design for "Modals"
+import { SearchProvider } from "./context/search";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <SearchProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </SearchProvider>
   </AuthProvider>
 );
 
