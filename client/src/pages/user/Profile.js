@@ -1,17 +1,137 @@
-import React from "react";
-import Layout from "../../components/Layout/Layout";
+import React, { useState, useEffect } from "react";
 import UserMenu from "../../components/Layout/UserMenu";
+import Layout from "./../../components/Layout/Layout";
+import { useAuth } from "../../context/auth";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const Profile = () => {
+  //state
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+
+  //context
+  const [auth, setAuth] = useAuth();
+
+  //get user data from context
+  useEffect(() => {
+    const { email, name, phone, address } = auth?.user;
+    setName(name);
+    setPhone(phone);
+    setEmail(email);
+    setAddress(address);
+  }, [auth?.user]);
+
+  // form function
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.put(`${process.env.REACT_APP_API}/api/v1/auth/profile`, {
+        name,
+        email,
+        password,
+        phone,
+        address,
+      });
+
+      if (data?.error) {
+        toast.error(data?.error);
+      } 
+      else {
+        setAuth({ ...auth, user: data?.updatedUser });
+        let ls = localStorage.getItem("auth");
+        ls = JSON.parse(ls);
+        ls.user = data.updatedUser;
+        localStorage.setItem("auth", JSON.stringify(ls));
+        toast.success("Profile Updated Successfully!!");
+      }
+    } 
+    catch (error) {
+      console.log(error);
+      toast.error("Something went wrong on updating profile");
+    }
+  };
+
+
   return (
-    <Layout title={"Dashboard - Profile"}>
-      <div className="container-fluid p-3 m-3">
+    <Layout title={"Your Profile"}>
+      <div className="container-fluid m-3 p-3">
         <div className="row">
+          {/* User Menu on left */}
           <div className="col-md-3">
             <UserMenu />
           </div>
+          {/* User Profile details on right */}
           <div className="col-md-9">
-            <h1>Profile</h1>
+            <div className="form-container ">
+              <form onSubmit={handleSubmit}>
+                <h4 className="title">USER PROFILE</h4>
+                {/* Name */}
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Your Name"
+                    autoFocus
+                  />
+                </div>
+                {/* Email */}
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Your Email "
+                    disabled
+                  />
+                </div>
+                {/* Password */}
+                <div className="mb-3">
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="form-control"
+                    id="exampleInputPassword1"
+                    placeholder="Enter Your Password"
+                  />
+                </div>
+                {/* Phone number */}
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Your Phone"
+                  />
+                </div>
+                {/* Address */}
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Your Address"
+                  />
+                </div>
+                {/* Update button */}
+                <button type="submit" className="btn btn-primary">
+                  UPDATE
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -20,29 +140,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-
-/*
-// Example: Get user profile
-export const getUserProfile = async (req, res) => {
-  try {
-    const user = await userModel.findById(req.params.id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Format the date before sending to the client
-    const formattedUser = {
-      ...user.toObject(),
-      question: user.question.toISOString().split('T')[0].split('-').reverse().join('/') // Format as dd/MM/yyyy
-    };
-
-    res.status(200).json({ success: true, user: formattedUser });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Error retrieving user data", error });
-  }
-};
-
-*/
