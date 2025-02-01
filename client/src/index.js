@@ -7,14 +7,17 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import "antd/dist/reset.css"; //From Ant design for "Modals"
 import { SearchProvider } from "./context/search";
+import { CartProvider } from "./context/cart";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <AuthProvider>
     <SearchProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CartProvider>
     </SearchProvider>
   </AuthProvider>
 );
