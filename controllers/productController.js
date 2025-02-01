@@ -264,3 +264,58 @@ export const productListController = async (req, res) => {
     });
   }
 };
+
+export const searchProductController = async (req, res) => {
+  try {
+    const {keyword} = req.params;
+    const results = await productModel.find({
+      $or: [ //Specifies that at least one of the following conditions must match
+        {name: {$regex: keyword, $options: 'i'}}, // Searches for the keyword in the name field, ignoring case
+        {description: {$regex: keyword, $options: 'i'}}, // Searches for the keyword in the description field, ignoring case
+      ]
+    })
+    .select("-photo")
+    .sort({createdAt: -1});
+
+    res.status(200).send({
+      success: true,
+      message: "Searching successful!",
+      results,
+    })
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error in searching products!!",
+      error,
+    })
+  }
+}
+
+export const realtedProductController = async (req, res) => {
+  try {
+    const { pid, cid } = req.params;
+    const products = await productModel
+      .find({
+        category: cid,
+        _id: { $ne: pid }, // Excludes the product already displaying from similar products
+      })
+      .select("-photo")
+      .limit(3)
+      .populate("category");
+
+    res.status(200).send({
+      success: true,
+      products,
+    });
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error while getting related products!",
+      error,
+    });
+  }
+};
