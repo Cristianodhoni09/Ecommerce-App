@@ -1,6 +1,7 @@
 import productModel from "../models/productModel.js";
 import fs from "fs";
 import slugify from "slugify";
+import categoryModel from "../models/categoryModel.js"
 
 export const createProductController = async (req, res) => {
   try {
@@ -265,6 +266,7 @@ export const productListController = async (req, res) => {
   }
 };
 
+//Search based products
 export const searchProductController = async (req, res) => {
   try {
     const {keyword} = req.params;
@@ -293,6 +295,7 @@ export const searchProductController = async (req, res) => {
   }
 }
 
+//Similar products
 export const realtedProductController = async (req, res) => {
   try {
     const { pid, cid } = req.params;
@@ -316,6 +319,28 @@ export const realtedProductController = async (req, res) => {
       success: false,
       message: "Error while getting related products!",
       error,
+    });
+  }
+};
+
+// get products based on category
+export const productCategoryController = async (req, res) => {
+  try {
+    const category = await categoryModel.findOne({ slug: req.params.slug });
+    const products = await productModel.find({ category }).populate("category");
+
+    res.status(200).send({
+      success: true,
+      category,
+      products,
+    });
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      error,
+      message: "Error while getting products",
     });
   }
 };
