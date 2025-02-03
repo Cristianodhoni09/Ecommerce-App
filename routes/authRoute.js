@@ -5,6 +5,7 @@ import {
   testController,
   forgotPasswordController,
   updateProfileController,
+  getOrdersController,
 } from "../controllers/authController.js";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 
@@ -35,10 +36,13 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
   res.status(200).send({ ok: true });
 });
 
-//update profile (Adding it before the below error handler)
+//update profile
 router.put("/profile", requireSignIn, updateProfileController);
 
-// Add a route for handling 404 errors
+//orders
+router.get("/orders", requireSignIn, getOrdersController);
+
+// Add a route for handling 404 errors  (Add all routes before it)
 router.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
