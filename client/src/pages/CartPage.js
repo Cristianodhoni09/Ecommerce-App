@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./../components/Layout/Layout";
 import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
+
+import DropIn from "braintree-web-drop-in-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+
 const CartPage = () => {
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
   const navigate = useNavigate();
+  const [clientToken, setClientToken] = useState(""); //To get token from BrainTree
+  const [instance, setInstance] = useState(""); //Stores the BrainTree payment instance created by the DropIn component
+  const [loading, setLoading] = useState(false);
 
   //total price
   const totalPrice = () => {
@@ -37,8 +45,53 @@ const CartPage = () => {
     }
   };
 
+  //get payment gateway token
+  const getToken = async () => {
+    try {
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/braintree/token`);
+      setClientToken(data?.clientToken);
+    } 
+    catch (error) {
+      console.log("Error in getting Braintree Token: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+  }, [auth?.token]); //If logged In user then get token
+
+  //Handle payments
+  const handlePayment = async () => {
+    try {
+      setLoading(true);
+
+      const { nonce } = await instance.requestPaymentMethod(); //BrainTree's method to request a secure payment token (nonce) after user input
+
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product/braintree/payment`,
+        { nonce, cart },
+        {
+          headers: {
+            Authorization: auth?.token, // Adding the token to the request headers
+          },
+        }
+      );
+
+      setLoading(false);
+
+      localStorage.removeItem("cart");
+      setCart([]);
+      navigate("/dashboard/user/orders");
+      toast.success("Payment Completed Successfully!! ");
+    } 
+    catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   return (
-    <Layout>
+    <Layout title={"Cart Page"}>
       <div className="container">
         {/* Displaying user's cart information */}
         <div className="row">
@@ -123,6 +176,30 @@ const CartPage = () => {
                     )}
                 </div>
                 )}
+                {/* Make payment option */}
+                <div className="mt-2">
+                  {!clientToken || !cart?.length ? ( "" ) : ( // if client token and cart is available then show checkout button
+                    <>
+                      <DropIn //BrainTree's UI component for rendering payment methods like cards and PayPal
+                        options={{
+                          authorization: clientToken, //Uses the clientToken from the backend to authenticate the payment
+                          paypal: {
+                            flow: "vault", //Enables PayPal vault payment (storing payment info to avoid re-entering them in future)
+                          },
+                        }}
+                        //Sets the BrainTree instance for later use when the payment is processed
+                        onInstance={(instance) => setInstance(instance)}
+                      />
+                      <button
+                        className="btn btn-primary"
+                        onClick={handlePayment}
+                        disabled={loading || !instance || !auth?.user?.address}
+                      >
+                        {loading ? "Processing ...." : "Make Payment"}
+                      </button>
+                    </>
+                  )}
+                </div>
             </div>
         </div>
       </div>
