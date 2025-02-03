@@ -3,6 +3,20 @@ import fs from "fs";
 import slugify from "slugify";
 import categoryModel from "../models/categoryModel.js"
 
+//Payment Gateway
+import braintree from "braintree";
+import dotenv from "dotenv";
+import orderModel from "../models/orderModel.js"
+
+dotenv.config();
+
+var gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: process.env.BRAINTREE_MERCHANT_ID,
+  publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+  privateKey: process.env.BRAINTREE_PRIVATE_KEY,
+});
+
 export const createProductController = async (req, res) => {
   try {
     //Taking all data from fields/files [since we have used formidable] (and not the body)
@@ -341,6 +355,78 @@ export const productCategoryController = async (req, res) => {
       success: false,
       error,
       message: "Error while getting products",
+    });
+  }
+};
+
+
+//payment gateway api
+//token
+export const braintreeTokenController = async (req, res) => {
+  try {
+    gateway.clientToken.generate({}, function (err, response) {
+      if (err) {
+        console.log("Token error(From Backend): ", err);
+        res.status(500).send(err);
+      } 
+      else {
+        res.send(response);
+      }
+    });
+  } 
+  catch (error) {
+    console.log(error);
+  }
+};
+
+//payment
+export const brainTreePaymentController = async (req, res) => {
+  try {
+    const { nonce, cart } = req.body;
+    
+    if (!nonce || !cart || cart.length === 0) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid payment request",
+      });
+    }
+
+    let total = 0;
+    cart.map((i) => {
+      total += i.price;
+    });
+
+    console.log("Total Amount:", total); // Debugging
+    console.log("Nonce:", nonce); // Debugging
+    
+    let newTransaction = gateway.transaction.sale( // Initiates a new payment transaction with BrainTree
+      {
+        amount: total,
+        paymentMethodNonce: nonce,
+        options: {
+          submitForSettlement: true, //Directly submits the transaction for settlement
+        },
+      },
+      function (error, result) {
+        if (result) {
+          // console.log("Payment Result:", result);
+
+          const order = new orderModel({ products: cart, payment: result, buyer: req.user._id, }).save();
+          res.json({ ok: true });
+        } 
+        else {
+          console.error("Braintree Error:", error);
+          res.status(500).send(error);
+        }
+      }
+    );
+  } 
+  catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in processing payment",
+      error,
     });
   }
 };
