@@ -27,8 +27,8 @@ const Products = () => {
 
 
   return (
-    <Layout>
-      <div className="row">
+    <Layout title={"Admin all products"}>
+      <div className="row dashboard">
         {/* Admin menu on left */}
         <div className="col-md-3">
           <AdminMenu />
@@ -36,7 +36,7 @@ const Products = () => {
         {/* Displaying all products on right*/}
         <div className="col-md-9 ">
           <h1 className="text-center">All Product List</h1>
-          <div className="d-flex">
+          <div className="d-flex flex-wrap">
             {products?.map((p) => (
               <Link
                 key={p._id}

@@ -14,11 +14,11 @@ dayjs.extend(relativeTime);
 
 const AdminOrders = () => {
   const [status, setStatus] = useState([
-    "Not Process",
+    "Not Processed",
     "Processing",
     "Shipped",
-    "deliverd",
-    "cancel",
+    "delivered",
+    "cancelled",
   ]);
   const [orders, setOrders] = useState([]);
   const [auth] = useAuth();

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "../../components/Layout/Layout";
+import "../../styles/AuthStyles.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

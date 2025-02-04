@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../context/cart";
 import toast from "react-hot-toast";
+import "../styles/CategoryProductStyles.css"
 
 const CategoryProduct = () => {
   const params = useParams();

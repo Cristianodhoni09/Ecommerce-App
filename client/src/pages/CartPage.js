@@ -7,9 +7,10 @@ import { useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import "../styles/CartStyles.css"
 
 const CartPage = () => {
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
   const [cart, setCart] = useCart();
   const navigate = useNavigate();
   const [clientToken, setClientToken] = useState(""); //To get token from BrainTree

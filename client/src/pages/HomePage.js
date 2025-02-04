@@ -6,6 +6,8 @@ import { Prices } from "../components/Prices";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/cart";
 import toast from "react-hot-toast";
+import { AiOutlineReload } from "react-icons/ai";
+import "../styles/HomePage.css";
 
 
 const HomePage = () => {
@@ -137,8 +139,15 @@ const HomePage = () => {
 
   return (
     <Layout title={"!!Best offers!!"} description={"This is Home page"} author={"Amit"}>
-      <div className="container-fluid row mt-3">
-        <div className="col-md-2">
+      {/* banner image */}
+      <img
+        src="/images/banner.png"
+        className="banner-img"
+        alt="bannerimage"
+        width={"100%"}
+      />
+      <div className="container-fluid row mt-3 home-page">
+        <div className="col-md-3 filters">
           {/* Filter by category */}
           <h4 className="text-center">Filter By Category</h4>
           <div className="d-flex flex-column">
@@ -227,7 +236,12 @@ const HomePage = () => {
                   setPage(page + 1);
                 }}
               >
-                {loading ? "Loading ..." : "Load More"}
+                {loading ? "Loading ..." : (
+                  <>
+                    {" "}
+                    Loadmore <AiOutlineReload />
+                  </>
+                )}
               </button>
             )}
           </div>
